@@ -1,6 +1,6 @@
 # TP MIAGE conception logicielle
 
-NOTE: TP de deux slots de 1h20
+NOTE: TP de trois slots de 1h20
 
 ## Nom du(des) étudiant(e)(s) de ce monôme/binôme 
 WARNING: NE PAS OUBLIER DE MENTIONNER LES DEUX NOMS SI VOUS ETES EN BINOME!
@@ -11,9 +11,9 @@ Commentaires éventuels des étudiants : #XXXXXX#
 
 ## Pré-requis 
 
-* Disposer d'un PC d'au moins 6 Gio de RAM avec 20 Gio de disque disponible ;
+* Disposer d'un PC d'au moins 8 Gio de RAM avec 20 Gio de disque disponible ;
 * Disposer d'une version recente de VirtualBox ;
-* Disposer d'un compte Github par personne (ou un pour deux personnes si vous êtes en binôme) ;
+* Disposer d'un compte Github par personne (ou un pour deux personnes si vous êtes en binôme) et avoir https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token[créé un access token] avec le droit `repo`;
 * Télécharger et décompresser l'image VirtualBox de l'environnement de développement https://public.florat.net/cours_miage/vm-tp-miage.zip[ici] (à faire *avant le TP*). Le login/mot de passe est : `tp`/`tp`.
 
 ## Déroulement du TP
@@ -24,6 +24,9 @@ Nous fournissons différents projets Eclipse servant de base de travail aux exer
 
 TIP: Fermer chaque projet Eclipse (sans supprimer les sources) avant de passer à l'exercice suivant pour éviter de confondre les projets ex1 et ex2.
 
+IMPORTANT: Vous ne pourrez pas faire de `push` avec votre mot de passe (Github n'authorise plus que les access tokens), veuillez utiliser login/<access token> (voir pré-requis plus haut pour le créer).
+
+NOTE: Pour mettre votre VM en plein écran, modifier la résolution dans la VM (bouton droit sur l'écran -> `Display settings` puis dans le menu VirtualBox, utiliser l'option `View` -> `Full screen mode`. Il peut éventuellement être nécessaire de redemarrer votre VM pour que ce soit pris en compte.
 
 ### Exercice 1 - Etudier une API REST sans couches
 _Temps estimé : 40 mins_
@@ -34,14 +37,22 @@ Faire `File` -> `Import` -> `Projects from Git (with smart import)` -> `Clone UR
 
 TIP: [Rappel Git] Trois dépôts sont ici utilisés: le dépot Github de l'enseignant (`bflorat/tp1-miage-2021`), le dépot Github du binôme (`<x>/tp1-miage-2021`), le dépot local sur le portable de l'un ou des deux étudiants du binôme.
 
-
 * Observer le code du projet `todolist-debut-ex1`
 
 *Le code est-il structuré en couches ? Quel problèmes ce code peut-il poser ?*
 
+Solution : Non, le code n'est pas structurée en couche. Les partie du programme sont bien spérarée dans des fichier différent. Cependant le paquet est le même pour l'ensemble de ces fichiers. Les différentes partie ne sont donc pas indépendantes. 
+
+Ce problème de couplage peut poser des difficultées lors de l'ajout de nouvelles fonctionalitées. En effet les parties n'étant pas indépendantes il sera impossible de récupérer un élément du porjet sans avoir à modifier d'autre élément sans rapport avec la partie concernée.
+
 *Où se trouve le code métier (voir la règle de gestion RG 1) ?*
 
+Le code métier ce trouve dans le fichier TodoListController.java.
+Ce fichier est dans le dossier src/main/java.
+
 *Cette règle est-elle facilement testable par un test unitaire ?*
+
+Non la règle n'est pas facilement testable. IL n'y à pas d'injection de dépendance dans le TodoListController.java. L'injection de dépendance permets rend les fonction plus facile à tester
 
 * Lancer une base PostgreSQL en Docker dans un terminal (on lance ici la base en mode interactif pour visualiser son activité. Pour la lancer en tâche de fond, remplacer les options `it` par `d` comme 'daemon'):
 ```bash
@@ -49,9 +60,22 @@ docker run -it -e POSTGRES_PASSWORD=password -p 5432:5432 postgres
 ```
 *Expliquer cette ligne de commande (y compris les options utilisées)*
 
+Cette ligne de commande permets la crétaion d'un conteneur Docker.
+
+-it : interactive , keep STDIN open even if not attached
+
+-p : publish a conteiner's port to the host. permets la saisie du port
+
+-e : set environment variables. permets la saisie des paramètre d'environnement. 
+
 * Compléter le code manquant dans la méthode `TodoListController.createTodoItem()`
 
 *Pourquoi `todoItemRepository` est-il `null` ? Quelle est la meilleure façon de l'injecter ?*
+
+Quand on créer le controleur, SPRING affecte les variables de classe.
+Pour cela il est impératif de marquer les composant de la classe. 
+
+La meilleur façon d'injecter est donc d'utiliser le marqueur @inject.
 
 * Modifier le code en conséquence.
 
@@ -94,6 +118,20 @@ Source : http://leanpub.com/get-your-hands-dirty-on-clean-architecture[Tom Hombe
 
 *Rappeler en quelques lignes les grands principes de l'architecture hexagonale.*
 
+L'architecture hexagonale permets la décomposition du code en plusieurs composant.
+
+Les composant sont :
+
+-le noyau de l'application
+
+-la base de données
+
+-les adaptateurs de test
+
+-les interfaces avec les autres système
+
+Chaque composant est connecté au autre grâce à des ports. 
+
 Compléter ce code avec une fonctionnalité de création de `TodoItem`  persisté en base et appelé depuis un endpoint REST `POST /todos` qui :
 
 * prend un `TodoItem` au format JSON dans le body (voir exemple de contenu plus haut);
@@ -110,7 +148,22 @@ _Temps estimé : 20 mins_
 
 *Quels types de tests devra-t-on écrire pour les adapteurs ?* 
 
+il faudra écrire des test unitaires. Il faudra également réaliser des test d'intégration. 
+
 *Que teste-on dans ce cas ?*
+
+On test l'ensembles des fonction.
+Dans notre cas il faut tester,
+Pour les classes de persistance 
+
+- L'ajout d'un nouveau TodoItem ou d'un todoItem existant
+- La récupération d'undes TodoItem
+
+Pour le controlleur : 
+
+-L'ajout d'un nouveau TodoItem et le statut retourné
+-L'ajout d'un TodoItem et le statut retournée
+-La récupération des todoItem et le statut retourné
 
 *S'il vous reste du temps, écrire quelques uns de ces types de test.*
 
@@ -119,3 +172,5 @@ _Temps estimé : 20 mins_
 - Pour tester l'adapter REST, utiliser l'annotation `@WebMvcTest(controllers = TodoListController.class)`
 - Voir cette https://spring.io/guides/gs/testing-web/[documentation]
 =====
+
+
