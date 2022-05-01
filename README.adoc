@@ -2,7 +2,8 @@
 
 NOTE: TP de trois slots de 1h20
 
-## Nom du(des) étudiant(e)(s) de ce monôme/binôme 
+## Nom du(des) étudiant(e)(s) de ce B/monôme 
+BERANGER Grégoire et AUBERT Quentin
 WARNING: NE PAS OUBLIER DE MENTIONNER LES DEUX NOMS SI VOUS ETES EN BINOME!
 
 #XXX# (et #YYY#)
@@ -41,18 +42,18 @@ TIP: [Rappel Git] Trois dépôts sont ici utilisés: le dépot Github de l'ensei
 
 *Le code est-il structuré en couches ? Quel problèmes ce code peut-il poser ?*
 
-Solution : Non, le code n'est pas structurée en couche. Les partie du programme sont bien spérarée dans des fichier différent. Cependant le paquet est le même pour l'ensemble de ces fichiers. Les différentes partie ne sont donc pas indépendantes. 
+Solution : Non, le code n'est pas structuré en couche. Les parties du programme sont bien séparées dans des fichiers différents. Cependant, le paquet est le même pour l'ensemble de ces fichiers. Les différentes parties ne sont donc pas indépendantes.
 
-Ce problème de couplage peut poser des difficultées lors de l'ajout de nouvelles fonctionalitées. En effet les parties n'étant pas indépendantes il sera impossible de récupérer un élément du porjet sans avoir à modifier d'autre élément sans rapport avec la partie concernée.
+Ce problème de couplage peut poser des difficultés lors de l'ajout de nouvelles fonctionnalités. En effet, les parties n'étant pas indépendantes, il sera impossible de récupérer un élément du projet sans avoir à modifier d'autres éléments sans rapport avec la partie concernée.
 
 *Où se trouve le code métier (voir la règle de gestion RG 1) ?*
 
-Le code métier ce trouve dans le fichier TodoListController.java.
+Le code métier se trouve dans le fichier TodoListController.java.
 Ce fichier est dans le dossier src/main/java.
 
 *Cette règle est-elle facilement testable par un test unitaire ?*
 
-Non la règle n'est pas facilement testable. IL n'y à pas d'injection de dépendance dans le TodoListController.java. L'injection de dépendance permets rend les fonction plus facile à tester
+Non, la règle n'est pas facilement testable. IL n'y a pas d'injection de dépendance dans le TodoListController.java. L'injection de dépendance permet rend les fonctions plus faciles à tester.
 
 * Lancer une base PostgreSQL en Docker dans un terminal (on lance ici la base en mode interactif pour visualiser son activité. Pour la lancer en tâche de fond, remplacer les options `it` par `d` comme 'daemon'):
 ```bash
@@ -60,13 +61,13 @@ docker run -it -e POSTGRES_PASSWORD=password -p 5432:5432 postgres
 ```
 *Expliquer cette ligne de commande (y compris les options utilisées)*
 
-Cette ligne de commande permets la crétaion d'un conteneur Docker.
+Cette ligne de commande permets la création d'un conteneur Docker.
 
 -it : interactive , keep STDIN open even if not attached
 
 -p : publish a conteiner's port to the host. permets la saisie du port
 
--e : set environment variables. permets la saisie des paramètre d'environnement. 
+-e : set environment variables. permets la saisie des paramètres d'environnement. 
 
 * Compléter le code manquant dans la méthode `TodoListController.createTodoItem()`
 
@@ -122,17 +123,17 @@ L'architecture hexagonale permets la décomposition du code en plusieurs composa
 
 Les composant sont :
 
--le noyau de l'application
+-le noyau de l'application.
 
--la base de données
+-la base de données.
 
--les adaptateurs de test
+-les adaptateurs de test.
 
--les interfaces avec les autres système
+-les interfaces avec les autres système.
 
-Chaque composant est connecté au autre grâce à des ports. 
+Chaque composant est connecté aux autres grâce à des ports. 
 
-Compléter ce code avec une fonctionnalité de création de `TodoItem`  persisté en base et appelé depuis un endpoint REST `POST /todos` qui :
+Compléter ce code avec une fonctionnalité de création de `TodoItem` persisté en base et appelé depuis un endpoint REST `POST /todos` qui :
 
 * prend un `TodoItem` au format JSON dans le body (voir exemple de contenu plus haut);
 * renvoie un code `201` en cas de succès. 
@@ -148,22 +149,22 @@ _Temps estimé : 20 mins_
 
 *Quels types de tests devra-t-on écrire pour les adapteurs ?* 
 
-il faudra écrire des test unitaires. Il faudra également réaliser des test d'intégration. 
+Il faudra écrire des tests unitaires. Il faudra également réaliser des tests d'intégration. 
 
 *Que teste-on dans ce cas ?*
 
-On test l'ensembles des fonction.
+On test l'ensembles des fonctions.
 Dans notre cas il faut tester,
-Pour les classes de persistance 
+Pour les classes de persistance.
 
-- L'ajout d'un nouveau TodoItem ou d'un todoItem existant
-- La récupération d'undes TodoItem
+- L'ajout d'un nouveau TodoItem ou d'un todoItem existant.
+- La récupération d'un des TodoItem.
 
 Pour le controlleur : 
 
--L'ajout d'un nouveau TodoItem et le statut retourné
--L'ajout d'un TodoItem et le statut retournée
--La récupération des todoItem et le statut retourné
+-L'ajout d'un nouveau TodoItem et le statut retourné.
+-L'ajout d'un TodoItem et le statut retournée.
+-La récupération des todoItem et le statut retourné.
 
 *S'il vous reste du temps, écrire quelques uns de ces types de test.*
 
